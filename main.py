@@ -11,7 +11,7 @@ import requests
 from pywinauto import clipboard # 채팅창내용 가져오기 위해
 import pandas as pd # 가져온 채팅내용 DF로 쓸거라
 # # 카톡창 이름, (활성화 상태의 열려있는 창)
-kakao_opentalk_name = '투자'
+kakao_opentalk_name = "🌞생활습관 소모임🌛"
 
 PBYTE256 = ctypes.c_ubyte * 256
 _user32 = ctypes.WinDLL("user32")
@@ -130,13 +130,10 @@ def chat_last_save():
     cur_year = str(time.localtime().tm_year) #오늘 날짜 불러오기
     cur_month = str(time.localtime().tm_mon)
     cur_day = str(time.localtime().tm_mday)
-
     # 오늘 날짜와 일치하는 부분의 index 반환하기
     index_num = df.index[df[0].str.contains(cur_year+"년" + " " + cur_month+"월"+" "+cur_day+"일")]
     index_num = index_num.tolist()[0]
     return df[index_num:]
-    # df[0] = df[0].str.replace('\[([\S\s]+)\] \[(오전|오후)([0-9:\s]+)\] ', '')  # 정규식으로 채팅내용만 남기기
-    # return df.index[-2], df.iloc[-2, 0]
 
 #하루치 채팅 중 미션으로 시작하는 채팅부터만 출력
 def chat_misson_startStr(word):
@@ -177,23 +174,22 @@ def chat_misson_Success(lst, start, late, out):
 
     lst_late = list(set(lst_late))
     lst_late = [x for x in lst_late if x not in lst_suc]
-
-    lst_out = list(set([x for x in lst_all if x not in lst_suc+lst_late]))
-
-
+    lst_notout = lst_suc + lst_late
+    lst_out = [x for x in lst_all if x not in lst_notout]
     return lst_suc, lst_late, lst_out
 
 
 def main():
     #lst_all에 단톡방에 있는 전 인원의 이름을 list, string type으로 넣기
-    lst_all = []
-    suc, late, out = chat_misson_Success(lst_all,"미션","지각컷","기절컷")
-    print(suc, late, out)
+    lst_all = ["홍한별 휴즈 gdsc", "김동현", "김명지", "박강민 휴즈 기계 17", "송현경", "수아", "연건", "우수몽 휴즈 컴소 15", "이동우 산공 18 98", "이병유 휴즈 미자전", "이윤선", "이종혁", "한주희", "박진혁"]
+    suc, late, out = chat_misson_Success(lst_all,"기상미션","지각컷","기절컷")
     #오늘 날짜 불러오기
     cur_month = str(time.localtime().tm_mon)
     cur_day = str(time.localtime().tm_mday)
     text = "{}월 {}일 기상미션 결과 \n 성공: {} \n 지각: {} \n 기절: {}".format(cur_month, cur_day, suc, late, out)
-    kakao_sendtext(kakao_opentalk_name, text)
+    print(text)
+    #kakao_sendtext(kakao_opentalk_name, text)
+
 
 if __name__ == '__main__':
     main()
