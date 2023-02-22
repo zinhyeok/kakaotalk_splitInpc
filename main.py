@@ -148,25 +148,25 @@ def chat_misson_startStr(word):
 
 def chat_misson_Success(lst, start, late, out):
     df = chat_misson_startStr(str(start))
+    df = df.reset_index()
     late_index = df.index[df[0].str.contains(str(late))]
     late_index = int(late_index.tolist()[0])
 
     out_index = df.index[df[0].str.contains(str(out))]
     out_index = int(out_index.tolist()[0])
 
-    df_suc = df.loc[:late_index]
-    df_late = df.loc[late_index:out_index]
+    df_suc = df.loc[1:late_index-1]
+    df_late = df.loc[late_index+1:out_index-1]
 
     lst_all = lst
     lst_suc = []
     lst_late= []
-
+    print(df)
     for i in df_suc.index:
         name = list(df_suc.loc[i][0].split("]"))
         lst_suc.append(name[0].lstrip("["))
 
     lst_suc = list(set(lst_suc))
-
 
     for i in df_late.index:
         name = list(df_late.loc[i][0].split("]"))
@@ -186,9 +186,18 @@ def main():
     #오늘 날짜 불러오기
     cur_month = str(time.localtime().tm_mon)
     cur_day = str(time.localtime().tm_mday)
-    text = "{}월 {}일 기상미션 결과 \n 성공: {} \n 지각: {} \n 기절: {}".format(cur_month, cur_day, suc, late, out)
+    suc_lst = []
+    late_lst = []
+    out_lst = []
+    for i in suc:
+        suc_lst.append(i[0:3])
+    for j in late:
+        late_lst.append(j[0:3])
+    for q in out:
+        out_lst.append(q[0:3])
+    text = "{}월 {}일 기상미션 결과 \n 지각: {} \n 기절: {}".format(cur_month, cur_day, str(late_lst).lstrip('[').rstrip(']'), str(out_lst).lstrip('[').rstrip(']'))
     print(text)
-    #kakao_sendtext(kakao_opentalk_name, text)
+    kakao_sendtext(kakao_opentalk_name, text)
 
 
 if __name__ == '__main__':
